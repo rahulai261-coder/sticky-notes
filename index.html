@@ -52,4 +52,122 @@
             min-height: 220px;
             padding: 15px;
             background: #fff176;
-            box
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            border-radius: 5px;
+        }
+
+        .note textarea {
+            width: 100%;
+            height: 160px;
+            border: none;
+            outline: none;
+            resize: none;
+            background: transparent;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        .delete {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            border: none;
+            background: #e53935;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete:hover {
+            background: #c62828;
+        }
+
+        .empty {
+            width: 100%;
+            text-align: center;
+            color: #777;
+            margin-top: 50px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>📝 Sticky Notes</h1>
+        <button onclick="addNote()">+ Add Note</button>
+    </header>
+
+    <div id="notesContainer"></div>
+
+    <script>
+        const notesContainer = document.getElementById("notesContainer");
+
+        // Load saved notes
+        let notes = JSON.parse(localStorage.getItem("stickyNotes")) || [];
+
+        // Display notes
+        function displayNotes() {
+            notesContainer.innerHTML = "";
+
+            if (notes.length === 0) {
+                notesContainer.innerHTML =
+                    '<div class="empty">No notes yet. Click "+ Add Note" to create one.</div>';
+                return;
+            }
+
+            notes.forEach((note, index) => {
+
+                const noteDiv = document.createElement("div");
+                noteDiv.className = "note";
+
+                noteDiv.innerHTML = `
+                    <textarea 
+                        placeholder="Write your note..."
+                        oninput="updateNote(${index}, this.value)"
+                    >${note}</textarea>
+
+                    <button class="delete" onclick="deleteNote(${index})">
+                        Delete
+                    </button>
+                `;
+
+                notesContainer.appendChild(noteDiv);
+            });
+        }
+
+        // Add new note
+        function addNote() {
+            notes.push("");
+            saveNotes();
+            displayNotes();
+        }
+
+        // Update note
+        function updateNote(index, value) {
+            notes[index] = value;
+            saveNotes();
+        }
+
+        // Delete note
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            saveNotes();
+            displayNotes();
+        }
+
+        // Save notes to localStorage
+        function saveNotes() {
+            localStorage.setItem("stickyNotes", JSON.stringify(notes));
+        }
+
+        // Initial display
+        displayNotes();
+    </script>
+
+</body>
+</html>
+```
